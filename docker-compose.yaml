@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  app:
+    build:
+      context: .
+    env_file: .env
+    container_name: feedback_bot
+    command: [ "./docker/app.sh" ]
+    volumes:
+      - .:/feedback_bot
+    restart: always
+
+
+
+volumes:
+  dbdata:

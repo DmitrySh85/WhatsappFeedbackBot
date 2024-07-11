@@ -1,0 +1,16 @@
+import os
+from dotenv import load_dotenv
+load_dotenv()
+import logging
+
+
+ID_INSTANCE = os.environ.get("ID_INSTANCE")
+API_TOKEN_INSTANCE = os.environ.get("API_TOKEN_INSTANCE")
+CRM_TOKEN = os.environ.get("CRM_TOKEN")
+CRM_URL = os.environ.get("CRM_URL")
+
+DEBUG = os.environ.get("DEBUG", "False") == "True"
+if DEBUG:
+    LOG_LEVEL = logging.DEBUG
+else:
+    LOG_LEVEL = logging.INFO
