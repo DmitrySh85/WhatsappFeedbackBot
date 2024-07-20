@@ -9,9 +9,12 @@ logger = init_logger(__name__)
 
 
 def parse_notification(notification: Notification):
-    sender_chat_id = notification.event["senderData"]["chatId"]
-    sender_phone_number = "+" + re.sub("@c.us", "", sender_chat_id)
-    message_text = notification.event["messageData"]["extendedTextMessageData"]["text"]
+    sender = notification.get_sender()
+    if sender:
+        sender_phone_number = "+" + re.sub("@c.us", "", sender)
+    else:
+        raise ValueError("Sender not found")
+    message_text = notification.get_message_text()
     return {"sender_phone_number": sender_phone_number, "text": message_text}
 
 
