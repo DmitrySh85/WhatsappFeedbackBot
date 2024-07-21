@@ -25,7 +25,7 @@ bot = GreenAPIBot(
 
 @bot.router.message(type_message=filters.TEXT_TYPES,
                     state=None,
-                    text_message=['1', '2 '])
+                    text_message=['1', '2'])
 def low_grade_message_handler(notification: Notification):
     notification.state_manager.update_state(
         notification.sender,
@@ -36,7 +36,7 @@ def low_grade_message_handler(notification: Notification):
 
 @bot.router.message(type_message=filters.TEXT_TYPES,
                     state=None,
-                    text_message=['3', '4 '])
+                    text_message=['3', '4'])
 def middle_grade_message_handler(notification: Notification):
     notification.state_manager.update_state(
         notification.sender,
