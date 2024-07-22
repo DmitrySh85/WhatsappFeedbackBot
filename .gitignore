@@ -7,4 +7,5 @@ images/
 .idea/
 **/.idea/
 __pycache__/
+extracted/
 data/

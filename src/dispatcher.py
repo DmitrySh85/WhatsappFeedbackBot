@@ -10,7 +10,8 @@ from static_text.static_text import (
     UNKNOWN_TYPE_MESSAGE_TEXT,
     FIVE_POINTS_GRADE_TEXT,
     ANOTHER_GRADES_TEXT,
-    GOODBYE_MESSAGE_TEXT
+    GOODBYE_MESSAGE_TEXT,
+    SECOND_TIME_FEEDBACK_ATTEMPT
 )
 from bot_logger import init_logger
 
@@ -49,8 +50,10 @@ def middle_grade_message_handler(notification: Notification):
 @bot.router.message(type_message=filters.TEXT_TYPES,
                     state=States.LOW_GRADE)
 def low_grades_explain_handler(notification: Notification):
+    
+    if not create_low_grade_feedback(notification):
+        return notification.answer(SECOND_TIME_FEEDBACK_ATTEMPT)
     notification.answer(GOODBYE_MESSAGE_TEXT)
-    create_low_grade_feedback(notification)
     notification.state_manager.delete_state(
         notification.sender
     )
@@ -59,8 +62,10 @@ def low_grades_explain_handler(notification: Notification):
 @bot.router.message(type_message=filters.TEXT_TYPES,
                     state=States.MIDDLE_GRADE)
 def middle_grades_explain_handler(notification: Notification):
+    
+    if not create_middle_grade_feedback(notification):
+        return notification.answer(SECOND_TIME_FEEDBACK_ATTEMPT)
     notification.answer(GOODBYE_MESSAGE_TEXT)
-    create_middle_grade_feedback(notification)
     notification.state_manager.delete_state(
         notification.sender
     )
@@ -70,8 +75,10 @@ def middle_grades_explain_handler(notification: Notification):
                     state=None,
                     text_message=["5"])
 def process_five_points_grade(notification: Notification):
+   
+    if not create_five_points_feedback(notification):
+        return notification.answer(SECOND_TIME_FEEDBACK_ATTEMPT)
     notification.answer(FIVE_POINTS_GRADE_TEXT)
-    create_five_points_feedback(notification)
 
 
 @bot.router.message()
