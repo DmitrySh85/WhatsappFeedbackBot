@@ -38,6 +38,7 @@ def create_five_points_feedback(notification: Notification) -> None:
     status = "ok"
     try:
         feedback = get_feedback(phone_number)
+        logger.debug(feedback)
     except CRMAPIError as e:
         logger.error(f"{e}\n{phone_number}\n{text}")
         return True
@@ -45,6 +46,7 @@ def create_five_points_feedback(notification: Notification) -> None:
         logger.info(f"{phone_number} is trying to make feedback '{text}' secong time")
         return None
     data = change_feedback_data(feedback, status, text)
+    logger.debug(data)
     try:
         send_put_request_to_crm(data)
     except CRMAPIError as e:
@@ -64,6 +66,7 @@ def get_feedback(phone_number: str):
         data = response.json()
         results = data.get("results")
         if results:
+            logger.debug(results)
             return results[0]
         else:
             return None

@@ -73,10 +73,11 @@ def middle_grades_explain_handler(notification: Notification):
 
 @bot.router.message(type_message=filters.TEXT_TYPES,
                     state=None,
-                    text_message=["5"])
-def process_five_points_grade(notification: Notification):
-   
-    if not create_five_points_feedback(notification):
+                    text_message=["5", "5 баллов", "Пять", "пять"])
+def process_five_points_grade(notification: Notification): 
+    created = create_five_points_feedback(notification)
+    logger.debug(notification.event, created)
+    if not created:
         return notification.answer(SECOND_TIME_FEEDBACK_ATTEMPT)
     notification.answer(FIVE_POINTS_GRADE_TEXT)
 
