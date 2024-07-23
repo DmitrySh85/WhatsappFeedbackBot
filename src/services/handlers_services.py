@@ -46,6 +46,7 @@ def create_five_points_feedback(notification: Notification) -> None:
         return None
     data = change_feedback_data(feedback, status, text)
     send_put_request_to_crm(data)
+    return True
 
 
 def get_feedback(phone_number: str):
