@@ -45,7 +45,10 @@ def create_five_points_feedback(notification: Notification) -> None:
         logger.info(f"{phone_number} is trying to make feedback '{text}' secong time")
         return None
     data = change_feedback_data(feedback, status, text)
-    send_put_request_to_crm(data)
+    try:
+        send_put_request_to_crm(data)
+    except CRMAPIError as e:
+        logger.error(e)
     return True
 
 
@@ -81,9 +84,12 @@ def send_put_request_to_crm(data):
     feedback_id = data.get("id")
     url = f"{CRM_URL}/api/feedback/{feedback_id}/"
     headers = {"Authorization": f"Token {CRM_TOKEN}"}
-    requests.put(
-        url=url, headers=headers, data=data
-    )
+    try:
+            requests.put(
+            url=url, headers=headers, data=data
+        )
+    except ConnectionError as e:
+        raise CRMAPIError("e")
 
 
 def create_middle_grade_feedback(notification: Notification) -> None:
@@ -104,7 +110,10 @@ def create_middle_grade_feedback(notification: Notification) -> None:
         logger.info(f"{phone_number} is trying to make feedback '{text}' secong time")
         return None
     data = change_feedback_data(feedback, status, text)
-    send_put_request_to_crm(data)
+    try:
+        send_put_request_to_crm(data)
+    except CRMAPIError as e:
+        logger.error(e)
     return True
 
 
@@ -126,5 +135,8 @@ def create_low_grade_feedback(notification: Notification) -> None:
         logger.info(f"{phone_number} is trying to make feedback '{text}' secong time")
         return None
     data = change_feedback_data(feedback, status, text)
-    send_put_request_to_crm(data)
+    try:
+        send_put_request_to_crm(data)
+    except CRMAPIError as e:
+        logger.error(e)
     return True
