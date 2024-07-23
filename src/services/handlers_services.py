@@ -46,7 +46,6 @@ def create_five_points_feedback(notification: Notification) -> None:
         logger.info(f"{phone_number} is trying to make feedback '{text}' secong time")
         return None
     data = change_feedback_data(feedback, status, text)
-    logger.debug(data)
     try:
         send_put_request_to_crm(data)
     except CRMAPIError as e:
@@ -57,7 +56,12 @@ def create_five_points_feedback(notification: Notification) -> None:
 def get_feedback(phone_number: str):
     url = f"{CRM_URL}/api/feedback/"
     headers = {"Authorization": f"Token {CRM_TOKEN}"}
-    params = {"phone": phone_number, "results[]": "message_send"}
+    params = {
+        "phone": phone_number, 
+        "results[]": "message_send",
+        "start_date": "2020-01-01",
+        "end_date": "2040-01-01"
+              }
     try:
         response = requests.get(url=url, headers=headers, params=params)
     except ConnectionError as e:
@@ -65,8 +69,8 @@ def get_feedback(phone_number: str):
     if response.status_code == 200:
         data = response.json()
         results = data.get("results")
+        logger.info(f"Received feedbacks from CRM:{results}")
         if results:
-            logger.debug(results)
             return results[0]
         else:
             return None
@@ -74,12 +78,14 @@ def get_feedback(phone_number: str):
 
 
 def change_feedback_data(feedback, status, text):
+    
     data = {
         "id": feedback["id"],
         "order": feedback["order"]["id"],
         "result_id": status,
         "comment": text
     }
+    logger.info(f"data for put request {data}")
     return data
 
 
@@ -88,9 +94,10 @@ def send_put_request_to_crm(data):
     url = f"{CRM_URL}/api/feedback/{feedback_id}/"
     headers = {"Authorization": f"Token {CRM_TOKEN}"}
     try:
-            requests.put(
+        response = requests.put(
             url=url, headers=headers, data=data
         )
+        logger.info(response)
     except ConnectionError as e:
         raise CRMAPIError("e")
 

@@ -84,4 +84,5 @@ def process_five_points_grade(notification: Notification):
 
 @bot.router.message()
 def process_another_feedback(notification: Notification):
-    notification.answer(UNKNOWN_TYPE_MESSAGE_TEXT)
+    notification.answer(UNKNOWN_TYPE_MESSAGE_TEXT[0])
+    notification.answer(UNKNOWN_TYPE_MESSAGE_TEXT[1])
