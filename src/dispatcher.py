@@ -52,7 +52,7 @@ def middle_grade_message_handler(notification: Notification):
 def low_grades_explain_handler(notification: Notification):
     created = create_low_grade_feedback(notification)
     try:
-        logger.debug(notification.event, created)
+        logger.debug(f"{notification.event} {created}")
     except TypeError:
         logger.debug("Failed to log lotification")
     if not created:
@@ -72,7 +72,7 @@ def low_grades_explain_handler(notification: Notification):
 def middle_grades_explain_handler(notification: Notification):
     created = create_middle_grade_feedback(notification)
     try:
-        logger.debug(notification.event, created)
+        logger.debug(f"{notification.event} {created}")
     except TypeError:
         logger.debug("Failed to log lotification")
     if not created:
@@ -93,7 +93,7 @@ def middle_grades_explain_handler(notification: Notification):
 def process_five_points_grade(notification: Notification): 
     created = create_five_points_feedback(notification)
     try:
-        logger.debug(notification.event, created)
+        logger.debug(f"{notification.event} {created}")
     except TypeError:
         logger.debug("Failed to log lotification")
     if not created:
