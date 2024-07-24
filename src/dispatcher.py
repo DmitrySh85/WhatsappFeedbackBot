@@ -50,9 +50,17 @@ def middle_grade_message_handler(notification: Notification):
 @bot.router.message(type_message=filters.TEXT_TYPES,
                     state=States.LOW_GRADE)
 def low_grades_explain_handler(notification: Notification):
-    
-    if not create_low_grade_feedback(notification):
-        return notification.answer(SECOND_TIME_FEEDBACK_ATTEMPT)
+    created = create_low_grade_feedback(notification)
+    try:
+        logger.debug(notification.event, created)
+    except TypeError:
+        logger.debug("Failed to log lotification")
+    if not created:
+        notification.answer(SECOND_TIME_FEEDBACK_ATTEMPT)
+        notification.state_manager.delete_state(
+            notification.sender
+        )
+        return
     notification.answer(GOODBYE_MESSAGE_TEXT)
     notification.state_manager.delete_state(
         notification.sender
@@ -62,9 +70,17 @@ def low_grades_explain_handler(notification: Notification):
 @bot.router.message(type_message=filters.TEXT_TYPES,
                     state=States.MIDDLE_GRADE)
 def middle_grades_explain_handler(notification: Notification):
-    
-    if not create_middle_grade_feedback(notification):
-        return notification.answer(SECOND_TIME_FEEDBACK_ATTEMPT)
+    created = create_middle_grade_feedback(notification)
+    try:
+        logger.debug(notification.event, created)
+    except TypeError:
+        logger.debug("Failed to log lotification")
+    if not created:
+        notification.answer(SECOND_TIME_FEEDBACK_ATTEMPT)
+        notification.state_manager.delete_state(
+            notification.sender
+        )
+        return
     notification.answer(GOODBYE_MESSAGE_TEXT)
     notification.state_manager.delete_state(
         notification.sender
@@ -76,7 +92,10 @@ def middle_grades_explain_handler(notification: Notification):
                     text_message=["5", "5 баллов", "Пять", "пять"])
 def process_five_points_grade(notification: Notification): 
     created = create_five_points_feedback(notification)
-    logger.debug(notification.event, created)
+    try:
+        logger.debug(notification.event, created)
+    except TypeError:
+        logger.debug("Failed to log lotification")
     if not created:
         return notification.answer(SECOND_TIME_FEEDBACK_ATTEMPT)
     notification.answer(FIVE_POINTS_GRADE_TEXT)
