@@ -9,8 +9,14 @@ services:
     volumes:
       - .:/feedback_bot
     restart: always
-
+    networks:
+      - crm
 
 
 volumes:
   dbdata:
+
+networks:
+  crm:
+    name: crm_crm
+    external: true
