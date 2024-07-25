@@ -17,6 +17,17 @@ class GreenAPIError(Exception):
     """Error from GreenAPI library"""
 
 
+class FeedbackNotFoundError(Exception):
+    """Error when feedback not found"""
+
+
+class CRMConnectionError(Exception):
+    """Error when connecting to CRM"""
+
+class NotificationDecodeError(Exception):
+    """Error when decoding Green-API object"""
+
+
 def parse_notification(notification: Notification):
     sender = notification.get_sender()
     if sender:
@@ -28,11 +39,12 @@ def parse_notification(notification: Notification):
 
 
 def create_five_points_feedback(notification: Notification) -> None:
+    logger.info("creating high grade feedback")
     try:
         result = parse_notification(notification)
     except GreenAPIError as e:
-        logger.error(e)
-        return True
+        logger.debug(e)
+        raise NotificationDecodeError(e)
     phone_number = result["sender_phone_number"]
     text = result["text"]
     status = "ok"
@@ -40,16 +52,16 @@ def create_five_points_feedback(notification: Notification) -> None:
         feedback = get_feedback(phone_number)
         logger.debug(feedback)
     except CRMAPIError as e:
-        logger.error(f"{e}\n{phone_number}\n{text}")
-        return True
+        logger.debug(f"{e}\n{phone_number}\n{text}")
+        raise CRMConnectionError(e)
     if not feedback:
-        logger.info(f"{phone_number} is trying to make feedback '{text}' secong time")
-        return None
+        raise FeedbackNotFoundError(f"{phone_number} is trying to make feedback '{text}' secong time")
     data = change_feedback_data(feedback, status, text)
     try:
         send_put_request_to_crm(data)
     except CRMAPIError as e:
-        logger.error(e)
+        logger.debug(e)
+        raise CRMConnectionError(e)
     return True
 
 
@@ -103,50 +115,55 @@ def send_put_request_to_crm(data):
 
 
 def create_middle_grade_feedback(notification: Notification) -> None:
+    logger.info("creating middle grade request")
     try:
         result = parse_notification(notification)
     except GreenAPIError as e:
-        logger.error(e)
-        return True
+        logger.debug(f"raising NotificationDecodeError {e}")
+        raise NotificationDecodeError(e)
     phone_number = result["sender_phone_number"]
     text = result["text"]
     status = "nok"
     try:
         feedback = get_feedback(phone_number)
+        logger.info(feedback)
     except CRMAPIError as e:
-        logger.error(f"{e}\n{phone_number}\n{text}")
-        return True
+        logger.debug(f"raising CRMConnectionError {e}")
+        raise CRMConnectionError(e)
     if not feedback:
-        logger.info(f"{phone_number} is trying to make feedback '{text}' secong time")
-        return None
+        logger.debug("raising FeedbackNotFoundError")
+        raise FeedbackNotFoundError(f"{phone_number} is trying to make feedback '{text}' secong time")
     data = change_feedback_data(feedback, status, text)
     try:
         send_put_request_to_crm(data)
     except CRMAPIError as e:
-        logger.error(e)
+        logger.debug(f"Raising CRMConnectionError {e}")
+        raise CRMConnectionError(e)
     return True
 
 
 def create_low_grade_feedback(notification: Notification) -> None:
+    logger.info("creating low grade feedback")
     try:
         result = parse_notification(notification)
     except GreenAPIError as e:
-        logger.error(e)
-        return True
+        logger.debug(e)
+        raise NotificationDecodeError(e)
     phone_number = result["sender_phone_number"]
     text = result["text"]
     status = "critical"
     try:
         feedback = get_feedback(phone_number)
+        logger.debug(feedback)
     except CRMAPIError as e:
-        logger.error(f"{e}\n{phone_number}\n{text}")
-        return True
+        logger.debug(f"{e}\n{phone_number}\n{text}")
+        raise CRMConnectionError(e)
     if not feedback:
-        logger.info(f"{phone_number} is trying to make feedback '{text}' secong time")
-        return None
+        raise FeedbackNotFoundError(f"{phone_number} is trying to make feedback '{text}' secong time")
     data = change_feedback_data(feedback, status, text)
     try:
         send_put_request_to_crm(data)
     except CRMAPIError as e:
-        logger.error(e)
+        logger.debug(e)
+        raise CRMConnectionError(e)
     return True
