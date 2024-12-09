@@ -127,9 +127,9 @@ def process_five_points_grade(notification: Notification):
     
     notification.answer(FIVE_POINTS_GRADE_TEXT)
 
-
 @bot.router.message()
 def process_another_feedback(notification: Notification):
+    print(notification)
     logger.info(notification.state_manager.get_state(notification.sender))
     notification.answer(UNKNOWN_TYPE_MESSAGE_TEXT[0])
     notification.answer(UNKNOWN_TYPE_MESSAGE_TEXT[1])

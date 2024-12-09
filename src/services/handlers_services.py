@@ -68,12 +68,8 @@ def create_five_points_feedback(notification: Notification) -> None:
 def get_feedback(phone_number: str):
     url = f"{CRM_URL}/api/feedback/"
     headers = {"Authorization": f"Token {CRM_TOKEN}"}
-    params = {
-        "phone": phone_number, 
-        "results[]": "message_send",
-        "start_date": "2020-01-01",
-        "end_date": "2040-01-01"
-              }
+    #В апи 
+    params = {"phone": phone_number}
     try:
         response = requests.get(url=url, headers=headers, params=params)
     except ConnectionError as e:
@@ -81,11 +77,15 @@ def get_feedback(phone_number: str):
     if response.status_code == 200:
         data = response.json()
         results = data.get("results")
-        logger.info(f"Received feedbacks from CRM:{results}")
+        #logger.info(f"Received feedbacks from CRM:{results}")
         if results:
-            return results[0]
+            message_send_results =  list(filter(lambda x: x.get("result", {}).get("id") == "message_send", results))
         else:
             return None
+        if not message_send_results:
+            return None
+        message_send_results.sort(key=lambda x: x.get("order", {}).get("order_date"), reverse=True)
+        return message_send_results[0]
     raise CRMAPIError("Invalid response from CRM")
 
 
