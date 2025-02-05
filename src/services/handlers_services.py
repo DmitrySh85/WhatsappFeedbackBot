@@ -64,11 +64,37 @@ def create_five_points_feedback(notification: Notification) -> None:
         raise CRMConnectionError(e)
     return True
 
+def create_unrecognized_feedback(notification: Notification) -> None:
+    print("Enter function")
+    try:
+        result = parse_notification(notification)
+    except GreenAPIError as e:
+        logger.debug(e)
+        raise NotificationDecodeError(e)
+    phone_number = result["sender_phone_number"]
+    print(phone_number)
+    text = result["text"]
+    status = "from_whatsapp"
+    try:
+        feedback = get_feedback(phone_number)
+        logger.debug(feedback)
+    except CRMAPIError as e:
+        logger.debug(f"{e}\n{phone_number}\n{text}")
+        raise CRMConnectionError(e)
+    if not feedback:
+        raise FeedbackNotFoundError(f"{phone_number} is trying to make feedback '{text}' secong time")
+    data = change_feedback_data(feedback, status, text)
+    try:
+        send_put_request_to_crm(data)
+    except CRMAPIError as e:
+        logger.debug(e)
+        raise CRMConnectionError(e)
+    return True
+
 
 def get_feedback(phone_number: str):
     url = f"{CRM_URL}/api/feedback/"
     headers = {"Authorization": f"Token {CRM_TOKEN}"}
-    #В апи 
     params = {"phone": phone_number}
     try:
         response = requests.get(url=url, headers=headers, params=params)
@@ -76,8 +102,8 @@ def get_feedback(phone_number: str):
         raise CRMAPIError("e")
     if response.status_code == 200:
         data = response.json()
+        print(data)
         results = data.get("results")
-        #logger.info(f"Received feedbacks from CRM:{results}")
         if results:
             message_send_results =  list(filter(lambda x: x.get("result", {}).get("id") == "message_send", results))
         else:
