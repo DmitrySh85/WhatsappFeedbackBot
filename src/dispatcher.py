@@ -17,6 +17,7 @@ from static_text.static_text import (
     SECOND_TIME_FEEDBACK_ATTEMPT
 )
 from bot_logger import init_logger
+from services.green_api_services import GreenAPIManager
 
 
 
@@ -129,7 +130,11 @@ def process_five_points_grade(notification: Notification):
 
 @bot.router.message()
 def process_another_feedback(notification: Notification):
-    print(notification)
     logger.info(notification.state_manager.get_state(notification.sender))
-    notification.answer(UNKNOWN_TYPE_MESSAGE_TEXT[0])
-    notification.answer(UNKNOWN_TYPE_MESSAGE_TEXT[1])
+    message_id = notification.event.get("idMessage")
+    sender_id = notification.event.get("senderData", {}).get("chatId")
+    green_api_manager = GreenAPIManager()
+    response = green_api_manager.forward_message(message_id, sender_id)
+    logger.info(f"Forward unrecognized message to operator: {response.code}")
+    #notification.answer(UNKNOWN_TYPE_MESSAGE_TEXT[0])
+    #notification.answer(UNKNOWN_TYPE_MESSAGE_TEXT[1])

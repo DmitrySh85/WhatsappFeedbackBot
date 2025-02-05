@@ -14,3 +14,5 @@ if DEBUG:
     LOG_LEVEL = logging.DEBUG
 else:
     LOG_LEVEL = logging.INFO
+
+OPERATOR_PHONE_NUMBER = os.environ.get("OPERATOR_PHONE_NUMBER")
