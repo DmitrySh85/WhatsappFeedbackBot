@@ -30,8 +30,8 @@ bot = GreenAPIBot(
 @bot.router.message(type_message=filters.TEXT_TYPES,
                     state=None,
                     text_message=[
-                        '1', 'Один', 'один', 'Один балл', 'один балл', '1 балл'
-                        '2', 'Два', 'два', 'Два балла', 'два балла', '2 балла'
+                        '1', 'Один', 'один', 'Один балл', 'один балл', '1 балл', "1!", "1-", "1+", "1(один)",
+                        '2', 'Два', 'два', 'Два балла', 'два балла', '2 балла', "2!", "двойка", "2-", "2(двойка)", "неуд"
                         ])
 def low_grade_message_handler(notification: Notification):
     logger.info(notification.event)
@@ -46,8 +46,8 @@ def low_grade_message_handler(notification: Notification):
 @bot.router.message(type_message=filters.TEXT_TYPES,
                     state=None,
                     text_message=[
-                        '3', 'Три', 'три', 'Три балла', 'три балла', '3 балла',
-                        '4', 'Четыре', 'четыре', 'Четыре балла', 'четыре балла', '4 балла'
+                        '3', 'Три', 'три', 'Три балла', 'три балла', '3 балла', "3!", "3-", "3+",
+                        '4', 'Четыре', 'четыре', 'Четыре балла', 'четыре балла', '4 балла', "4!", "4-", "4+"
                                    ])
 def middle_grade_message_handler(notification: Notification):
     logger.info(notification.state_manager.get_state(notification.sender))
@@ -102,7 +102,22 @@ def middle_grades_explain_handler(notification: Notification):
 
 @bot.router.message(type_message=filters.TEXT_TYPES,
                     state=None,
-                    text_message=["5", "5 баллов", "Пять", "пять", "Пять баллов"])
+                    text_message=[
+                        "5", 
+                        "5 баллов", 
+                        "Пять", 
+                        "пять", 
+                        "Пять баллов",
+                        "Пять балов",
+                        "пять балов"
+                        "5 (пять)",
+                        "5(пять) баллов",
+                        "5!",
+                        "5+",
+                        "5-",
+                        "отлично",
+                        "Отлично"
+                        ])
 def process_five_points_grade(notification: Notification): 
     logger.info(notification.event)
     logger.info("process high grade")
