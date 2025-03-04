@@ -30,6 +30,7 @@ bot = GreenAPIBot(
 @bot.router.message(type_message=filters.TEXT_TYPES,
                     state=None,
                     text_message=[
+                        '0', 'Ноль', 'ноль', 'Полный ноль', 'Нуль', 'нуль',
                         '1', 'Один', 'один', 'Один балл', 'один балл', '1 балл', "1!", "1-", "1+", "1(один)",
                         '2', 'Два', 'два', 'Два балла', 'два балла', '2 балла', "2!", "двойка", "2-", "2(двойка)", "неуд"
                         ])
@@ -135,7 +136,6 @@ def process_another_feedback(notification: Notification):
     logger.info(notification.state_manager.get_state(notification.sender))
     logger.info(notification.event)
     try:
-        
         create_unrecognized_feedback(notification)
     except (NotificationDecodeError, CRMConnectionError, FeedbackNotFoundError) as e:
         logger.debug(e)

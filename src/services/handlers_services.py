@@ -24,6 +24,7 @@ class FeedbackNotFoundError(Exception):
 class CRMConnectionError(Exception):
     """Error when connecting to CRM"""
 
+
 class NotificationDecodeError(Exception):
     """Error when decoding Green-API object"""
 
@@ -62,17 +63,15 @@ def create_five_points_feedback(notification: Notification) -> None:
     except CRMAPIError as e:
         logger.debug(e)
         raise CRMConnectionError(e)
-    return True
+
 
 def create_unrecognized_feedback(notification: Notification) -> None:
-    print("Enter function")
     try:
         result = parse_notification(notification)
     except GreenAPIError as e:
         logger.debug(e)
         raise NotificationDecodeError(e)
     phone_number = result["sender_phone_number"]
-    print(phone_number)
     text = result["text"]
     status = "from_whatsapp"
     try:
@@ -89,7 +88,6 @@ def create_unrecognized_feedback(notification: Notification) -> None:
     except CRMAPIError as e:
         logger.debug(e)
         raise CRMConnectionError(e)
-    return True
 
 
 def get_feedback(phone_number: str):
@@ -102,10 +100,9 @@ def get_feedback(phone_number: str):
         raise CRMAPIError("e")
     if response.status_code == 200:
         data = response.json()
-        print(data)
         results = data.get("results")
         if results:
-            message_send_results =  list(filter(lambda x: x.get("result", {}).get("id") == "message_send", results))
+            message_send_results = list(filter(lambda x: x.get("result", {}).get("id") == "message_send", results))
         else:
             return None
         if not message_send_results:
