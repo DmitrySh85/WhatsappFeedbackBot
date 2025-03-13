@@ -184,7 +184,7 @@ def process_another_feedback(notification: Notification):
     api_manager = YandexAPIManager()
     try:
         ai_response = api_manager.send_recognition_request(message_text)
-        response_data = f"Оценка АИ: {ai_response.get("grade", " ")}\nКомментарий АИ: {ai_response.get("description", "")}"
+        response_data = f"Оценка АИ: {ai_response.get('grade', '')}\nКомментарий АИ: {ai_response.get('description', '')}"
     except Exception as e:
         response_data = e
     try:
