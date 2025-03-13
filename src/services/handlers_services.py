@@ -48,7 +48,7 @@ def create_five_points_feedback(notification: Notification) -> None:
         raise NotificationDecodeError(e)
     phone_number = result["sender_phone_number"]
     text = result["text"]
-    status = "ok"
+    status = "happy"
     try:
         feedback = get_feedback(phone_number)
         logger.debug(feedback)
@@ -65,14 +65,17 @@ def create_five_points_feedback(notification: Notification) -> None:
         raise CRMConnectionError(e)
 
 
-def create_unrecognized_feedback(notification: Notification) -> None:
+def create_unrecognized_feedback(
+        notification: Notification, 
+        response_data: str
+        ) -> None:
     try:
         result = parse_notification(notification)
     except GreenAPIError as e:
         logger.debug(e)
         raise NotificationDecodeError(e)
     phone_number = result["sender_phone_number"]
-    text = result["text"]
+    text = result["text"] + "\n" + response_data
     status = "from_whatsapp"
     try:
         feedback = get_feedback(phone_number)
@@ -136,6 +139,33 @@ def send_put_request_to_crm(data):
     except ConnectionError as e:
         raise CRMAPIError("e")
 
+
+def create_high_grade_feedback(notification: Notification) -> None:
+    logger.info("creating high grade request")
+    try:
+        result = parse_notification(notification)
+    except GreenAPIError as e:
+        logger.debug(f"raising NotificationDecodeError {e}")
+        raise NotificationDecodeError(e)
+    phone_number = result["sender_phone_number"]
+    text = result["text"]
+    status = "ok"
+    try:
+        feedback = get_feedback(phone_number)
+        logger.info(feedback)
+    except CRMAPIError as e:
+        logger.debug(f"raising CRMConnectionError {e}")
+        raise CRMConnectionError(e)
+    if not feedback:
+        logger.debug("raising FeedbackNotFoundError")
+        raise FeedbackNotFoundError(f"{phone_number} is trying to make feedback '{text}' secong time")
+    data = change_feedback_data(feedback, status, text)
+    try:
+        send_put_request_to_crm(data)
+    except CRMAPIError as e:
+        logger.debug(f"Raising CRMConnectionError {e}")
+        raise CRMConnectionError(e)
+    return True
 
 def create_middle_grade_feedback(notification: Notification) -> None:
     logger.info("creating middle grade request")

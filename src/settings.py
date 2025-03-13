@@ -16,3 +16,6 @@ else:
     LOG_LEVEL = logging.INFO
 
 OPERATOR_PHONE_NUMBER = os.environ.get("OPERATOR_PHONE_NUMBER")
+
+YANDEX_CATALOG_ID = os.environ.get("YANDEX_CATALOG_ID")
+YANDEX_API_TOKEN = os.environ.get("YANDEX_API_TOKEN")
