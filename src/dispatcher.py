@@ -172,7 +172,6 @@ def process_five_points_grade(notification: Notification):
     except Exception as e:
         logger.debug(e)
     
-    notification.answer(FIVE_POINTS_GRADE_TEXT)
 
 
 @bot.router.message()

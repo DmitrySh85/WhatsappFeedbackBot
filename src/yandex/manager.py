@@ -15,7 +15,6 @@ class YandexAPIManager:
             self,
             text: str,
     ) -> Result | None:
-        print("ENTER THE METHOD")
         url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
         prompt = (
             "Мы сеть автосервисов Геликон. Мы находимся в Нижнем Новгороде, Москве и Алматы."
