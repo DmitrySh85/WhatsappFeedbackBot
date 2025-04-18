@@ -35,7 +35,7 @@ def init_logger(logger_name: str | None = None):
 
     # Set the overall log level for the logger
     bot_logger.setLevel(int(os.environ.get("LOG_LEVEL", logging.DEBUG)))
-
+    logging.getLogger("urllib3").setLevel(logging.WARNING)
     if logger_name:
         return logging.getLogger(f"root.{logger_name}")
 
