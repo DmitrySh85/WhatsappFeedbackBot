@@ -181,12 +181,14 @@ def process_another_feedback(notification: Notification):
     logger.info(notification.event)
     try:
         result = parse_notification(notification)
+        logger.debug(result)
     except GreenAPIError as e:
         logger.debug(e)
         return
     if not result:
         return
     message_text = result.get("text")
+    logger.debug(f"received message text: {message_text}")
     api_manager = YandexAPIManager()
     try:
         ai_response = api_manager.send_recognition_request(message_text)

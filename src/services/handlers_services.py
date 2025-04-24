@@ -71,6 +71,7 @@ def create_unrecognized_feedback(
         ) -> None:
     try:
         result = parse_notification(notification)
+        logger.debug(result)
     except GreenAPIError as e:
         logger.debug(e)
         raise NotificationDecodeError(e)
@@ -86,6 +87,7 @@ def create_unrecognized_feedback(
     if not feedback:
         raise FeedbackNotFoundError(f"{phone_number} is trying to make feedback '{text}' secong time")
     data = change_feedback_data(feedback, status, text)
+    logger.debug(f"Change feedback data: {data}")
     try:
         send_put_request_to_crm(data)
     except CRMAPIError as e:
@@ -104,6 +106,7 @@ def get_feedback(phone_number: str):
     if response.status_code == 200:
         data = response.json()
         results = data.get("results")
+        logger.debug(f"Fetching feedback: {results}")
         if results:
             message_send_results = list(filter(lambda x: x.get("result", {}).get("id") == "message_send", results))
         else:
@@ -137,7 +140,7 @@ def send_put_request_to_crm(data):
         )
         logger.info(response)
     except ConnectionError as e:
-        raise CRMAPIError("e")
+        raise CRMAPIError(e)
 
 
 def create_high_grade_feedback(notification: Notification) -> None:
