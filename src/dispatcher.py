@@ -179,6 +179,8 @@ def process_another_feedback(notification: Notification):
     logger.info(notification.state_manager.get_state(notification.sender))
     logger.info(notification.event)
     result = parse_notification(notification)
+    if not result:
+        return
     message_text = result.get("text")
     api_manager = YandexAPIManager()
     try:
