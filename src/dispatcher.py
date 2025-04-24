@@ -10,7 +10,8 @@ from services.handlers_services import(
     parse_notification,
     NotificationDecodeError,
     CRMConnectionError,
-    FeedbackNotFoundError
+    FeedbackNotFoundError,
+    GreenAPIError
 )
 from static_text.static_text import (
     FIVE_POINTS_GRADE_TEXT,
@@ -178,7 +179,11 @@ def process_five_points_grade(notification: Notification):
 def process_another_feedback(notification: Notification):
     logger.info(notification.state_manager.get_state(notification.sender))
     logger.info(notification.event)
-    result = parse_notification(notification)
+    try:
+        result = parse_notification(notification)
+    except GreenAPIError as e:
+        logger.debug(e)
+        return
     if not result:
         return
     message_text = result.get("text")
