@@ -98,7 +98,7 @@ def create_unrecognized_feedback(
 def get_feedback(phone_number: str):
     url = f"{CRM_URL}/api/feedback/"
     headers = {"Authorization": f"Token {CRM_TOKEN}"}
-    params = {"keyword": phone_number}
+    params = {"keyword": phone_number.replace("+", "")}
     try:
         response = requests.get(url=url, headers=headers, params=params)
     except ConnectionError as e:
