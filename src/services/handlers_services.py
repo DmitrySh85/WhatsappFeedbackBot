@@ -76,7 +76,11 @@ def create_unrecognized_feedback(
         logger.debug(e)
         raise NotificationDecodeError(e)
     phone_number = result["sender_phone_number"]
-    text = result["text"] + "\n" + response_data
+    try:
+        text = result["text"] + "\n" + response_data
+    except TypeError as e:
+        logger.debug(e)
+        text = response_data
     status = "from_whatsapp"
     try:
         feedback = get_feedback(phone_number)
