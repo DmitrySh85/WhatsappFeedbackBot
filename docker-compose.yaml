@@ -8,15 +8,4 @@ services:
     command: [ "sh", "./docker/app.sh" ]
     volumes:
       - .:/feedback_bot
-    restart: always
-    networks:
-      - crm
-
-
-volumes:
-  dbdata:
-
-networks:
-  crm:
-    name: crm_crm
-    external: true
+    restart: unless-stopped
