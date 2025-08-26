@@ -72,10 +72,11 @@ class YandexAPIManager:
             return result   
         return result     
 
-    def _parse_ai_answer(self, data: Response) -> Result:
+    def _parse_ai_answer(self, data: Response) -> Result | None:
         alternatives = data.get("result", {}).get("alternatives", [])
         if alternatives:
             content = alternatives[0].get("message",{}).get("text").strip("```")
             result = json.loads(content)
             logger.info(result)
-            return result 
+            return result
+        return None

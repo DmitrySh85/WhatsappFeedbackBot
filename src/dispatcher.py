@@ -20,7 +20,7 @@ from static_text.static_text import (
     SECOND_TIME_FEEDBACK_ATTEMPT
 )
 from bot_logger import init_logger
-from yandex.manager import YandexAPIManager
+from deepseek.manager import DeepseekAPIManager
 import json
 
 
@@ -189,7 +189,7 @@ def process_another_feedback(notification: Notification):
         return
     message_text = result.get("text")
     logger.debug(f"received message text: {message_text}")
-    api_manager = YandexAPIManager()
+    api_manager = DeepseekAPIManager()
     try:
         ai_response = api_manager.send_recognition_request(message_text)
         response_data = f"Оценка АИ: {ai_response.get('grade', '')}\nКомментарий АИ: {ai_response.get('description', '')}"

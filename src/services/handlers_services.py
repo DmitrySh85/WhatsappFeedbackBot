@@ -113,11 +113,15 @@ def get_feedback(phone_number: str):
         logger.debug(f"Fetching feedback: {results}")
         if results:
             message_send_results = list(filter(lambda x: x.get("result", {}).get("id") == "message_send", results))
+            logger.debug(message_send_results)
         else:
+            logger.debug("No message_send_results, return None")
             return None
         if not message_send_results:
+            logger.debug("No message_send_results, return None")
             return None
         message_send_results.sort(key=lambda x: x.get("order", {}).get("order_date"), reverse=True)
+        logger.debug(message_send_results)
         return message_send_results[0]
     raise CRMAPIError("Invalid response from CRM")
 
@@ -135,6 +139,7 @@ def change_feedback_data(feedback, status, text):
 
 
 def send_put_request_to_crm(data):
+    logger.info("Sending put request to CRM")
     feedback_id = data.get("id")
     url = f"{CRM_URL}/api/feedback/{feedback_id}/"
     headers = {"Authorization": f"Token {CRM_TOKEN}"}

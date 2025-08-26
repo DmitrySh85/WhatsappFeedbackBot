@@ -1,8 +1,8 @@
-from typing import TypedDict, Optional
+from typing import TypedDict, Optional, NotRequired
 
 
 class Result(TypedDict):
-    type: str
+    grade: NotRequired[str]
     description: str
 
 
